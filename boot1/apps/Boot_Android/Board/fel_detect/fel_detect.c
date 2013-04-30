@@ -20,7 +20,7 @@
 */
 #include "include.h"
 #include "common_res.h"
-
+#include "axp_i.h"
 
 #define   BAT_VOL_ACTIVE     (10)
 
@@ -125,7 +125,7 @@ __s32 check_power_status(void)
 {
 	__s32 status;
 	__s32 power_start;
-
+    __u32 dcin, bat_exist;
 	status = wBoot_power_get_level();
 	if(status == 1)						//低电状态下，无外部电源，直接关机
 	{
@@ -160,7 +160,7 @@ __s32 check_power_status(void)
 			}
 		}
 	}
-	else							//电池电量足够情况下
+	else							//status=2 电池电量足够情况下
 	{
 		if(power_start & 0x01)		//如果第0bit的值为1，则进入系统
 		{
@@ -173,10 +173,10 @@ __s32 check_power_status(void)
 	__inf("startup status = %d\n", status);
 	if(status)
 	{
-		return 0;
-	}
+	    return 0;
+    }
 	{
-		__u32 dcin, bat_exist;
+		
 		__s32 bat_cal, this_bat_cal;
 		__u32 bat_show_hd = NULL;
 		int   i, j;

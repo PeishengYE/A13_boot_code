@@ -190,7 +190,7 @@ __s32 check_file( __u32 *mem_base, __u32 size, const char *magic )
 *
 ************************************************************************************************************
 */
-__u32 calc_crc32(void * buffer, __u32 length)
+__u32 calc1_crc32(void * buffer, __u32 length)
 {
 	__u32 i, j;
 	CRC32_DATA_t crc32;		//

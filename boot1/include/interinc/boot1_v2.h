@@ -51,6 +51,8 @@
 #define BLKS_FOR_BOOT1_IN_512K_BLK_NF   5
 #define BLKS_FOR_BOOT1_IN_1M_BLK_NF     5
 #define BLKS_FOR_BOOT1_IN_2M_BLK_NF     5
+#define BLKS_FOR_BOOT1_IN_4M_BLK_NF     5
+
 
 /****************************************************************************
 *                                                                           *

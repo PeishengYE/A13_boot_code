@@ -326,7 +326,8 @@ __s32 BootOS_detect_os_type(__u32 *para_addr, __u32 *kernal_addr, void *os_info,
 				}
 				else if(recovery == ANDROID_RECOVERY_MODE)
 				{
-					strcpy((char *)bt_msg->command, "boot-recovery");
+                    strcpy((char *)bt_msg->command, "boot-recovery");
+                    strcpy((char *)bt_msg->recovery, "recovery\n--show_text");
 					__inf("recovery mode\n");
 				}
 				wBoot_block_write(start, 1, data);

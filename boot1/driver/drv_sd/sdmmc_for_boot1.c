@@ -263,7 +263,7 @@ __s32 SDMMC_LogicalWrite(__u32 start_sector, __u32 nsector, void *buf, __u32 car
 	while(nsector >= SD_BLOCK_MAXLENGTH_ONE_TIME)
 	{
 		nsector -= SD_BLOCK_MAXLENGTH_ONE_TIME;
-		ret = SDMMC_PhyWrite(start_sector, SD_BLOCK_MAXLENGTH_ONE_TIME, buf, card_no);
+		ret = SDMMC_PhyWrite(start_sector, SD_BLOCK_MAXLENGTH_ONE_TIME, tmp_buf, card_no);
 		start_sector += SD_BLOCK_MAXLENGTH_ONE_TIME;
 		tmp_buf = (__s8 *)tmp_buf + (SD_BLOCK_MAXLENGTH_ONE_TIME<<9);
 		if(ret)

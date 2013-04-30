@@ -40,6 +40,9 @@
 typedef long long			__int64;
 typedef long long			__s64;
 
+typedef unsigned long long			__uint64;
+typedef unsigned long long			__u64;
+
 typedef unsigned int        __u32;
 typedef unsigned int          u32;
 

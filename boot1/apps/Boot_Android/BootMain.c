@@ -58,13 +58,13 @@ int BootMain(int argc, char **argv)
     boot_global_info_t   *global_info;
 //    char				  product[64];
 
-	DMSG_INFO("BootMain start\n");
+	//DMSG_INFO("BootMain start\n");
 	while( 1 )
 	{
 		char ch;
 
 		ch = wBoot_getc_delay( 1 );  // 27000000
-	    __inf("%d\n", ch);
+
 	    if( ch == '2' )
 	    {
 	    	__inf("Jump to fel\n");
@@ -79,7 +79,7 @@ int BootMain(int argc, char **argv)
 	    {
 	        __u32 dbg = 0x55;
 
-            __inf("for debug\n");
+            //__inf("for debug\n");
 	        while(dbg == 0x55);
 	        break;
 	    }
@@ -96,6 +96,18 @@ int BootMain(int argc, char **argv)
 	    }
 	    else
 	    {
+            int k;
+            __s32 key_value = 0;
+            for(k=0;k<4;k++)
+            {
+                wBoot_timer_delay(500);
+                key_value = wBoot_key_get_value();
+                if(key_value == 5){
+                    boot_recovery_status = 1;
+                    break;
+                }
+            }
+
 			break;
 	    }
 	}
@@ -155,10 +167,12 @@ int BootMain(int argc, char **argv)
 	    __u32			    gpio_hd = NULL;
 	    int					gpio_value;
 		ret = wBoot_script_parser_fetch("system", "recovery_key", (int *)&gpio_recovery, sizeof(user_gpio_set_t)/4);
+        __inf(" -- -- recovery_key ret:%d\n", (!ret));
 		if(!ret)
 		{
 			gpio_recovery.mul_sel = 0;		//强制设置成输入
 			gpio_hd = wBoot_GPIO_Request(&gpio_recovery, 1);
+            __inf(" -- -- recovery_key gpio_hd:%u\n", gpio_hd);
 			if(gpio_hd)
 			{
 				int k;
@@ -174,13 +188,15 @@ int BootMain(int argc, char **argv)
 			{
 				__inf("set to recovery\n");
 				boot_recovery_status = 1;
-			}
+			}else{
+                __inf("not set to recovery\n");
+            }
 		}
 	}
 #endif
 //	check_private_part(boot1_priv_para.uart_port);
 //	check_private_part(11);
-	__inf("init to usb pc\n");
+// 	__inf("init to usb pc\n");
 //	power_set_usbpc();
     //申请内存，填充第一个启动脚本
     global_info = (boot_global_info_t *)wBoot_malloc(sizeof(boot_global_info_t));

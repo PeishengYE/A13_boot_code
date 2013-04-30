@@ -154,10 +154,20 @@ int BootMain(int argc, char **argv)
 		wBoot_block_dread(15, 1, buffer);
 		if(strcmp(buffer, "1234567890abcdefghijklmnopqrstuvwxyz"))
 		{
-			__inf("try to close\n");
-			wBoot_timer_delay(3000);
+			int ret1, status;
 
-			wBoot_power_set_off();
+			ret1 = wBoot_script_parser_fetch("card_boot", "keep_poweron", &status, 1);
+			if((!ret1) && (status == 1))
+			{
+				__inf("keep power on\n");
+			}
+			else
+			{
+				__inf("try to close\n");
+				wBoot_timer_delay(3000);
+
+				wBoot_power_set_off();
+			}
 		}
 		else
 		{

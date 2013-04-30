@@ -19,7 +19,7 @@ typedef struct
     __u8        SectorCntPerPage;                   //the count of sectors in one single physic page, one sector is 0.5k
     __u16       PageCntPerPhyBlk;                   //the count of physic pages in one physic block
     __u16       BlkCntPerDie;                       //the count of the physic blocks in one die, include valid block and invalid block
-    __u16       OperationOpt;                       //the mask of the operation types which current nand flash can support support
+    __u32       OperationOpt;                       //the mask of the operation types which current nand flash can support support
     __u8        FrequencePar;                       //the parameter of the hardware access clock, based on 'MHz'
     __u8        EccMode;                            //the Ecc Mode for the nand flash chip, 0: bch-16, 1:bch-28, 2:bch_32
     __u8        NandChipId[8];                      //the nand chip id of current connecting nand chip
@@ -37,7 +37,7 @@ typedef struct boot_physical_param
 	__u8   chip; //chip no
 	__u16  block; // block no within chip
 	__u16  page; // page no within block
-	__u16  sectorbitmap; //done't care
+	__u64  sectorbitmap; //done't care
 	void   *mainbuf; //data buf
 	void   *oobbuf; //oob buf
 }

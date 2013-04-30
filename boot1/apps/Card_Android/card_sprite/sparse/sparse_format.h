@@ -50,5 +50,15 @@ __attribute__ ((packed)) chunk_header_t;
 /* Following a Raw or Fill chunk is data.  For a Raw chunk, it's the data in chunk_sz * blk_sz.
  *  For a Fill chunk, it's 4 bytes of the fill data.
  */
+#define   SPARSE_FORMAT_TYPE_TOTAL_HEAD       0xff00
+#define   SPARSE_FORMAT_TYPE_CHUNK_HEAD       0xff01
+#define   SPARSE_FORMAT_TYPE_CHUNK_DATA       0xff02
+
+extern int  unsparse_probe(char *source, __u32 length, __u32 flash_start);
+extern int  unsparse_direct_write(void *pbuf, int length);
+extern unsigned int unsparse_checksum(void);
+extern int unsparse_deal(void);
+
+
 #endif   //__SPARSE_FORMAT_H__
 

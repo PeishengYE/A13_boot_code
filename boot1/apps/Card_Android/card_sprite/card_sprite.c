@@ -99,7 +99,7 @@ __s32 card_sprite(void *mbr_i, int flash_erase, int disp_type)
 	//NAND设备初始化
     memset(flash_info, 0, 512);
     __inf("erase flag=%d\n", flash_erase);
-    ret = update_flash_hardware_scan(flash_info, flash_erase);
+    ret = update_flash_hardware_scan(mbr_i,flash_info, flash_erase);
     if(ret == 0)
     {
     	__inf("burn nand\n");
@@ -119,15 +119,17 @@ __s32 card_sprite(void *mbr_i, int flash_erase, int disp_type)
     }
     //准备nand数据信息
 	sprite_show(CARD_SPRITE_FLASH_INFO);
-	src_buf = (char *)sprite_malloc(1024 * 1024);
-    if(!src_buf)
-    {
-        sprite_wrn("sprite update error: fail to get memory for tmpdata\n");
-
-        goto _update_error_;
-    }
-    dest_buf = src_buf + 512 * 1024;
+	//src_buf = (char *)sprite_malloc(1024 * 1024);
+    //if(!src_buf)
+    //{
+    //   sprite_wrn("sprite update error: fail to get memory for tmpdata\n");
+    //
+    //   goto _update_error_;
+    //}
+    //dest_buf = src_buf + 512 * 1024;
 	/* dl info 获取内存空间 */
+    src_buf =  (char *)(0x48000000);
+    dest_buf = (char *)(0x4C000000);
     dl_info = (download_info *)sprite_malloc(sizeof(download_info));
     if(!dl_info)
     {
@@ -220,7 +222,7 @@ __s32 card_sprite(void *mbr_i, int flash_erase, int disp_type)
     for(i=0;i<mbr_count;i++)
     {
     	tmp_mbr_cfg = (MBR *)(tmp_mbr_buf + i * sizeof(MBR));
-		crc = calc_crc32((void *)&tmp_mbr_cfg->version, sizeof(MBR) - 4);
+		crc = calc1_crc32((void *)&tmp_mbr_cfg->version, sizeof(MBR) - 4);
 		__inf("count crc=%x, source crc=%x\n", crc, tmp_mbr_cfg->crc32);
 		if(crc != tmp_mbr_cfg->crc32)
 		{
@@ -258,7 +260,7 @@ __s32 card_sprite(void *mbr_i, int flash_erase, int disp_type)
     Img_CloseItem(imghd, imgitemhd);
     imgitemhd = NULL;
     //检查 DOWNLOAD MAP的合法性
-	crc = calc_crc32(&dl_info->version, sizeof(download_info) - 4);
+	crc = calc1_crc32(&dl_info->version, sizeof(download_info) - 4);
 	if(crc != dl_info->crc32)
 	{
 		sprite_wrn("sprite update error: download map file is not correct\n");
@@ -281,7 +283,6 @@ __s32 card_sprite(void *mbr_i, int flash_erase, int disp_type)
 	sprite_ratio = CARD_SPRITE_GET_MAP;
 	for(i=0;i<dl_info->download_count;i++)
 	{
-__download_part_data__:
 		__inf("dl name = %s\n", dl_info->one_part_info[i].name);
 	    imgitemhd = Img_OpenItem(imghd, "RFSFAT16", (char *)dl_info->one_part_info[i].dl_filename);
 	    if(!imgitemhd)
@@ -457,6 +458,8 @@ __download_part_data__:
 	    {
 	    	__inf("part %s not need verify\n", dl_info->one_part_info[i].dl_filename);
 	    }
+__download_part_data__:
+		;
 	}
 	sprite_show(CARD_SPRITE_DOWN_PART);
 /*****************************************************************************
@@ -638,10 +641,10 @@ __download_part_data__:
     ret = 0;
 
 _update_error_:
-    if(src_buf)
-    {
-        sprite_free(src_buf);
-    }
+//    if(src_buf)
+//    {
+//        sprite_free(src_buf);
+//    }
 //    if(buf0)
 //    {
 //        sprite_free(buf0);

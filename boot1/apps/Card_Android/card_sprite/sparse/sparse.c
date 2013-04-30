@@ -29,12 +29,14 @@
 #include  "sparse_format.h"
 
 #define  SPARSE_HEADER_MAJOR_VER 1
-#define  ANDROID_FORMAT_DRAM_ADDRESS         0x48000000
 
-int    android_format_flash_start;
-char  *android_format_dram_base;
-char  *android_format_dram_addr;
-int    android_format_size;
+__u32  android_format_checksum;
+__u32  sparse_format_type;
+__u32  chunk_count;
+int  last_rest_size;
+int  chunk_length;
+__u32  flash_start;
+sparse_header_t globl_header;
 /*
 ************************************************************************************************************
 *
@@ -51,7 +53,58 @@ int    android_format_size;
 *
 ************************************************************************************************************
 */
-int unsparse_probe(char *source, __u32 length, __u32 flash_start)
+static __u32 add_sum(void *pbuf, __u32 len)
+{
+	//确保len是4字节对齐的，不然就需要重新计算
+	__u32 sum = 0;
+	__u32 *addr = (__u32 *)pbuf;
+	__u32 data_len = len;
+	__u32 rest;
+
+    rest = len & 0x03;
+	data_len = (len & (~0x03))>>2;
+
+	while(data_len --)
+	{
+		sum += *addr ++;
+	}
+
+    if(rest == 0)
+    {
+    	;
+    }
+	else if(rest == 1)
+	{
+		sum += (*addr) & 0xff;
+	}
+	else if(rest == 2)
+	{
+		sum += (*addr) & 0xffff;
+	}
+	else if(rest == 3)
+	{
+		sum += (*addr) & 0xffffff;
+	}
+
+	return sum;
+}
+/*
+************************************************************************************************************
+*
+*                                             unsparse_probe
+*
+*    函数名称：
+*
+*    参数列表：
+*
+*    返回值  ：
+*
+*    说明    ：
+*
+*
+************************************************************************************************************
+*/
+int unsparse_probe(char *source, __u32 length, __u32 android_format_flash_start)
 {
 	sparse_header_t *header = (sparse_header_t*) source;
 
@@ -70,10 +123,12 @@ int unsparse_probe(char *source, __u32 length, __u32 flash_start)
 
 		return -1;
 	}
-	android_format_dram_base = (char *)ANDROID_FORMAT_DRAM_ADDRESS;
-	android_format_flash_start = flash_start;
-	android_format_dram_addr = android_format_dram_base;
-	android_format_size      = 0;
+	android_format_checksum  = 0;
+	last_rest_size = 0;
+	chunk_count = 0;
+	chunk_length = 0;
+	sparse_format_type = SPARSE_FORMAT_TYPE_TOTAL_HEAD;
+	flash_start = android_format_flash_start;
 
 	return 0;
 }
@@ -93,18 +148,14 @@ int unsparse_probe(char *source, __u32 length, __u32 flash_start)
 *
 ************************************************************************************************************
 */
-int  unsparse_dram_write(void *pbuf, int length)
+int unsparse_deal(void)
 {
-	memcpy(android_format_dram_addr, pbuf, length);
-	android_format_dram_addr += length;
-	android_format_size += length;
-
 	return 0;
 }
 /*
 ************************************************************************************************************
 *
-*                                             unsparse_deal
+*                                             DRAM_Write
 *
 *    函数名称：
 *
@@ -117,75 +168,172 @@ int  unsparse_dram_write(void *pbuf, int length)
 *
 ************************************************************************************************************
 */
-int unsparse_deal(void)
+int  unsparse_direct_write(void *pbuf, int length)
 {
-	sparse_header_t *header;
-	unsigned i, len = 0;
-	char *source;
-	chunk_header_t *chunk;
-	int  flash_start;
-	int  ratio0, ratio1;
+	int   unenough_length;
+	int   this_rest_size;
+	int   tmp_down_size;
+	char *tmp_buf, *tmp_dest_buf;
+	chunk_header_t   *chunk;
 
-	flash_start = android_format_flash_start;
-	header = (sparse_header_t *)android_format_dram_base;
-	source = android_format_dram_base + header->file_hdr_sz;
+    //首先计算传进的数据的校验和
+	android_format_checksum += add_sum(pbuf, length);
 
-	ratio0 = ratio1= 0;
-	__inf("sparse ratio=%d\n", ratio0);
-	for (i=0; i < header->total_chunks; i++)
-	{
-		chunk = (chunk_header_t *)source;
+    this_rest_size = last_rest_size + length;
+    tmp_buf = (char *)pbuf - last_rest_size;
+	last_rest_size = 0;
 
-		/* move to next chunk */
-		source += sizeof(chunk_header_t);
-		len = chunk->chunk_sz * header->blk_sz;
-
-		switch (chunk->chunk_type)
+    while(this_rest_size > 0)
+    {
+		switch(sparse_format_type)
 		{
-			case CHUNK_TYPE_RAW:
+			case SPARSE_FORMAT_TYPE_TOTAL_HEAD:
+			{
+				memcpy(&globl_header, tmp_buf, sizeof(sparse_header_t));
+            	this_rest_size -= sizeof(sparse_header_t);
+            	tmp_buf += sizeof(sparse_header_t);
 
-				if (chunk->total_sz != (len + sizeof(chunk_header_t)))
-				{
-					__inf("sparse: bad chunk size for chunk %d, type Raw\n", i);
-
-					return -1;
-				}
-
-				if(sprite_flash_write(flash_start, len>>9, source))
-				{
-					__inf("sparse: flash write failed\n");
-
-					return -1;
-				}
-				flash_start += (len>>9);
-				source += len;
+                sparse_format_type = SPARSE_FORMAT_TYPE_CHUNK_HEAD;
 
 				break;
-
-			case CHUNK_TYPE_DONT_CARE:
-				if (chunk->total_sz != sizeof(chunk_header_t))
+			}
+			case SPARSE_FORMAT_TYPE_CHUNK_HEAD:
+			{
+				if(this_rest_size < sizeof(chunk_header_t))
 				{
-					__inf("sparse: bogus DONT CARE chunk\n");
+					__inf("sparse: chunk head data is not enough\n");
+					last_rest_size = this_rest_size;
+					tmp_dest_buf = (char *)pbuf - this_rest_size;
+		    		memcpy(tmp_dest_buf, tmp_buf, this_rest_size);
+					this_rest_size = 0;
 
-					return -1;
+		    		break;
+				}
+				chunk = (chunk_header_t *)tmp_buf;
+				/* move to next chunk */
+				tmp_buf += sizeof(chunk_header_t);        //此时tmp_buf已经指向下一个chunk或者data起始地址
+				this_rest_size -= sizeof(chunk_header_t); //剩余的数据长度
+				chunk_length = chunk->chunk_sz * globl_header.blk_sz;   //当前数据块需要写入的数据长度
+				__inf("chunk index = %d\n", chunk_count ++);
+
+				switch (chunk->chunk_type)
+				{
+					case CHUNK_TYPE_RAW:
+
+						if (chunk->total_sz != (chunk_length + sizeof(chunk_header_t)))
+						{
+							__inf("sparse: bad chunk size for chunk %d, type Raw\n", chunk_count);
+
+							return -1;
+						}
+						//这里不处理数据部分，转到下一个状态
+						sparse_format_type = SPARSE_FORMAT_TYPE_CHUNK_DATA;
+
+						break;
+
+					case CHUNK_TYPE_DONT_CARE:
+						if (chunk->total_sz != sizeof(chunk_header_t))
+						{
+							__inf("sparse: bogus DONT CARE chunk\n");
+
+							return -1;
+						}
+						flash_start += (chunk_length>>9);
+						sparse_format_type = SPARSE_FORMAT_TYPE_CHUNK_HEAD;
+
+						break;
+
+					default:
+						__inf("sparse: unknown chunk ID %x\n", chunk->chunk_type);
+
+						return -1;
+				}
+				break;
+			}
+			case SPARSE_FORMAT_TYPE_CHUNK_DATA:
+			{
+				//首先判断数据是否足够当前chunk所需,如果不足，则计算出还需要的数据长度
+				unenough_length = (chunk_length >= this_rest_size)? (chunk_length - this_rest_size):0;
+				if(!unenough_length)
+				{
+					//数据足够，直接写入
+					if(sprite_flash_write(flash_start, chunk_length>>9, tmp_buf))
+					{
+						__inf("sparse: flash write failed\n");
+
+						return -1;
+					}
+					if(chunk_length & 511)
+					{
+						__inf("data is not sector align 0\n");
+
+						return -1;
+					}
+					flash_start += (chunk_length>>9);
+					tmp_buf += chunk_length;
+					this_rest_size -= chunk_length;
+					chunk_length = 0;
+
+					sparse_format_type = SPARSE_FORMAT_TYPE_CHUNK_HEAD;
+				}
+				else  //存在缺失数据的情况
+				{
+					if(this_rest_size < 8 * 1024) //先看已有数据是否不足8k
+					{
+						//当不足时，把这笔数据放到下一笔数据的前部，等待下一次处理
+						tmp_dest_buf = (char *)pbuf - this_rest_size;
+						memcpy(tmp_dest_buf, tmp_buf, this_rest_size);
+                        last_rest_size = this_rest_size;
+						this_rest_size = 0;
+
+						break;
+					}
+					//当已有数据超过16k时
+					//当缺失数据长度不足4k时,可能只缺几十个字节
+					if(unenough_length < 4 * 1024)
+					{
+						//采用拼接方法，先烧写部分已有数据，然后在下一次把未烧写的已有数据和缺失数据一起烧录
+						tmp_down_size = this_rest_size + unenough_length - 4 * 1024;
+					}
+					else //这里处理缺失数据超过8k(包含)的情况,同时已有数据也超过16k
+					{
+						//直接烧录当前全部数据;
+						tmp_down_size = this_rest_size & (~(512 -1));  //扇区对齐
+					}
+					if(sprite_flash_write(flash_start, tmp_down_size>>9, tmp_buf))
+					{
+						__inf("sparse: flash write failed\n");
+
+						return -1;
+					}
+					if(tmp_down_size & 511)
+					{
+						__inf("data is not sector align 1\n");
+
+						return -1;
+					}
+					tmp_buf += tmp_down_size;
+					flash_start += (tmp_down_size>>9);
+					chunk_length -= tmp_down_size;
+					this_rest_size -= tmp_down_size;
+					tmp_dest_buf = (char *)pbuf - this_rest_size;
+					memcpy(tmp_dest_buf, tmp_buf, this_rest_size);
+					last_rest_size = this_rest_size;
+					this_rest_size = 0;
+
+					sparse_format_type = SPARSE_FORMAT_TYPE_CHUNK_DATA;
 				}
 
-				flash_start += (len>>9);
-
 				break;
+			}
 
 			default:
-				__inf("sparse: unknown chunk ID %x\n", chunk->chunk_type);
+			{
+				__inf("sparse: unknown status\n");
 
 				return -1;
+			}
 		}
-		ratio1 = i*10 / header->total_chunks;
-		if(ratio0 != ratio1)
-		{
-			ratio0 = ratio1;
-			__inf("sparse ratio=%d\n", ratio0);
-		}
-
 	}
 
 	return 0;
@@ -208,7 +356,8 @@ int unsparse_deal(void)
 */
 __u32 unsparse_checksum(void)
 {
-	return verify_sum(android_format_dram_base, android_format_size);
+	//return verify_sum(android_format_dram_base, android_format_size);
+	return android_format_checksum;
 }
 
 

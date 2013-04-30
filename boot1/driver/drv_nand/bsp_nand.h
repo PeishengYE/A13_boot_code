@@ -35,12 +35,12 @@
 //  nand driver 版本号
 //---------------------------------------------------------------
 #define  NAND_VERSION_0                 0x02
-#define  NAND_VERSION_1                 0x10
+#define  NAND_VERSION_1                 0x11
 
 //---------------------------------------------------------------
 //  结构体 定义
 //---------------------------------------------------------------
-typedef struct 
+typedef struct
 {
     __u8        ChipCnt;                            //the count of the total nand flash chips are currently connecting on the CE pin
     __u16       ChipConnectInfo;                    //chip connect information, bit == 1 means there is a chip connecting on the CE pin
@@ -53,9 +53,9 @@ typedef struct
     __u8        SectorCntPerPage;                   //the count of sectors in one single physic page, one sector is 0.5k
     __u16       PageCntPerPhyBlk;                   //the count of physic pages in one physic block
     __u16       BlkCntPerDie;                       //the count of the physic blocks in one die, include valid block and invalid block
-    __u16       OperationOpt;                       //the mask of the operation types which current nand flash can support support
+    __u32       OperationOpt;                       //the mask of the operation types which current nand flash can support support
     __u8        FrequencePar;                       //the parameter of the hardware access clock, based on 'MHz'
-    __u8        EccMode;                            //the Ecc Mode for the nand flash chip, 0: bch-16, 1:bch-28, 2:bch_32   
+    __u8        EccMode;                            //the Ecc Mode for the nand flash chip, 0: bch-16, 1:bch-28, 2:bch_32
     __u8        NandChipId[8];                      //the nand chip id of current connecting nand chip
     __u16       ValidBlkRatio;                      //the ratio of the valid physical blocks, based on 1024
 	__u32 		good_block_ratio;					//good block ratio get from hwscan
@@ -78,7 +78,7 @@ struct boot_physical_param{
 	__u8   chip; //chip no
 	__u16  block; // block no within chip
 	__u16  page; // apge no within block
-	__u16  sectorbitmap; //done't care
+	__u64  sectorbitmap; //done't care
 	void   *mainbuf; //data buf
 	void   *oobbuf; //oob buf
 };
@@ -140,11 +140,11 @@ extern __s32 NFC_LSBDisable(__u32 chip, __u32 read_retry_type);
 extern __s32 NFC_LSBInit(__u32 read_retry_type);
 extern __s32 NFC_LSBExit(__u32 read_retry_type);
 
-/* 
+/*
 *   Description:
 *   1. if u wanna set dma callback hanlder(sleep during dma transfer) to free cpu for other tasks,
 *      one must call the interface before nand flash initialization.
-      this option is also protected by dma poll method,wakup(succeed or timeout) then check 
+      this option is also protected by dma poll method,wakup(succeed or timeout) then check
       dma transfer complete or still running.
 *   2. if u use dma poll method,no need to call the interface.
 *

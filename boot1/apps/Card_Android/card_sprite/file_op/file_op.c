@@ -86,7 +86,7 @@ WRes DFB_Part_Read(void *data, __u32 size, CSzFile *p)
         len = size < (DEC_SECTOR_SIZE - Offset) ? size : (DEC_SECTOR_SIZE - Offset);
         if (len > (p->Size - p->CurPos))
         {
-            len = p->Size - p->Buffer_t.Pos;
+            len = p->Size - p->CurPos;
 			Left = 0;
         }
         else
@@ -120,7 +120,7 @@ WRes DFB_Part_Read(void *data, __u32 size, CSzFile *p)
             len = p->Size - p->CurPos;
 			Left = 0;
         }
-		else
+        else
 		{
 			Left -= len;
 		}
@@ -158,6 +158,7 @@ WRes DFB_Part_Read(void *data, __u32 size, CSzFile *p)
 
 WRes DFB_Part_Write(const void *data, __u32 size, CSzFile *p)
 {
+#if 0
     UInt32 Offset;
     UInt32 Left;
     UInt32 WriteOut;
@@ -237,6 +238,8 @@ WRes DFB_Part_Write(const void *data, __u32 size, CSzFile *p)
         WriteOut += len;
     }
     return WriteOut;
+#endif
+    return 0;
 }
 
 void File_Construct(CSzFile *p)
