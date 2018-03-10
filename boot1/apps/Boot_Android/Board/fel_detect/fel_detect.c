@@ -34,13 +34,13 @@ static int shut_battery_full(void);
 *
 *                                             function
 *
-*    º¯ÊıÃû³Æ£º
+*    å‡½æ•°åç§°ï¼š
 *
-*    ²ÎÊıÁĞ±í£º
+*    å‚æ•°åˆ—è¡¨ï¼š
 *
-*    ·µ»ØÖµ  £º
+*    è¿”å›å€¼  ï¼š
 *
-*    ËµÃ÷    £º
+*    è¯´æ˜    ï¼š
 *
 *
 ************************************************************************************************************
@@ -75,13 +75,13 @@ __s32 check_file_to_fel(char *name)
 *
 *                                             function
 *
-*    º¯ÊıÃû³Æ£º
+*    å‡½æ•°åç§°ï¼š
 *
-*    ²ÎÊıÁĞ±í£º
+*    å‚æ•°åˆ—è¡¨ï¼š
 *
-*    ·µ»ØÖµ  £º
+*    è¿”å›å€¼  ï¼š
 *
-*    ËµÃ÷    £ºÈç¹ûÊÇÁ¿²úÍê³É£¬Ö±½Ó¹Ø»ú
+*    è¯´æ˜    ï¼šå¦‚æœæ˜¯é‡äº§å®Œæˆï¼Œç›´æ¥å…³æœº
 *
 *
 ************************************************************************************************************
@@ -109,14 +109,14 @@ __s32 check_natch_time(char *file_name, __u32 work_mode)
 *
 *                                             function
 *
-*    º¯ÊıÃû³Æ£º
+*    å‡½æ•°åç§°ï¼š
 *
-*    ²ÎÊıÁĞ±í£º
+*    å‚æ•°åˆ—è¡¨ï¼š
 *
-*    ·µ»ØÖµ  £º 0:Õı³£Æô¶¯
-*			   -1:¹Ø»ú
+*    è¿”å›å€¼  ï¼š 0:æ­£å¸¸å¯åŠ¨
+*			   -1:å…³æœº
 *
-*    ËµÃ÷    £ºÈç¹ûÊÇÁ¿²úÍê³É£¬Ö±½Ó¹Ø»ú
+*    è¯´æ˜    ï¼šå¦‚æœæ˜¯é‡äº§å®Œæˆï¼Œç›´æ¥å…³æœº
 *
 *
 ************************************************************************************************************
@@ -136,7 +136,7 @@ __s32 check_power_status(void)
 		*/
 	
 	status = wBoot_power_get_level();
-	//µÍµç×´Ì¬ÏÂ£¬ÎŞÍâ²¿µçÔ´£¬Ö±½Ó¹Ø»ú 
+	//ä½ç”µçŠ¶æ€ä¸‹ï¼Œæ— å¤–éƒ¨ç”µæºï¼Œç›´æ¥å…³æœº 
 	if(status == 1){
 		__inf("battery low power with no dc or ac, should set power off\n");
 		ShowPictureEx("c:\\os_show\\low_pwr.bmp", 0);
@@ -144,16 +144,16 @@ __s32 check_power_status(void)
 		return -1;
 	}
 	power_start = 0;
-	//0: ²»ÔÊĞí²å»ğÅ£Ö±½Ó¿ª»ú£¬±ØĞëÍ¨¹ıÅĞ¶Ï£ºÂú×ãÒÔÏÂÌõ¼ş¿ÉÒÔÖ±½Ó¿ª»ú£º³¤°´power°´¼ü£¬Ç°´ÎÊÇÏµÍ³×´Ì¬£¬Èç¹ûµç³ØµçÁ¿¹ıµÍ£¬Ôò²»ÔÊĞí¿ª»ú
-	//1: ÈÎÒâ×´Ì¬ÏÂ£¬ÔÊĞí²å»ğÅ£Ö±½Ó¿ª»ú£¬Í¬Ê±ÒªÇóµç³ØµçÁ¿×ã¹»¸ß
-	//2: ²»ÔÊĞí²å»ğÅ£Ö±½Ó¿ª»ú£¬±ØĞëÍ¨¹ıÅĞ¶Ï£ºÂú×ãÒÔÏÂÌõ¼ş¿ÉÒÔÖ±½Ó¿ª»ú£º³¤°´power°´¼ü£¬Ç°´ÎÊÇÏµÍ³×´Ì¬£¬²»ÒªÇóµç³ØµçÁ¿
-	//3: ÈÎÒâ×´Ì¬ÏÂ£¬ÔÊĞí²å»ğÅ£Ö±½Ó¿ª»ú£¬²»ÒªÇóµç³ØµçÁ¿
+	//0: ä¸å…è®¸æ’ç«ç‰›ç›´æ¥å¼€æœºï¼Œå¿…é¡»é€šè¿‡åˆ¤æ–­ï¼šæ»¡è¶³ä»¥ä¸‹æ¡ä»¶å¯ä»¥ç›´æ¥å¼€æœºï¼šé•¿æŒ‰poweræŒ‰é”®ï¼Œå‰æ¬¡æ˜¯ç³»ç»ŸçŠ¶æ€ï¼Œå¦‚æœç”µæ± ç”µé‡è¿‡ä½ï¼Œåˆ™ä¸å…è®¸å¼€æœº
+	//1: ä»»æ„çŠ¶æ€ä¸‹ï¼Œå…è®¸æ’ç«ç‰›ç›´æ¥å¼€æœºï¼ŒåŒæ—¶è¦æ±‚ç”µæ± ç”µé‡è¶³å¤Ÿé«˜
+	//2: ä¸å…è®¸æ’ç«ç‰›ç›´æ¥å¼€æœºï¼Œå¿…é¡»é€šè¿‡åˆ¤æ–­ï¼šæ»¡è¶³ä»¥ä¸‹æ¡ä»¶å¯ä»¥ç›´æ¥å¼€æœºï¼šé•¿æŒ‰poweræŒ‰é”®ï¼Œå‰æ¬¡æ˜¯ç³»ç»ŸçŠ¶æ€ï¼Œä¸è¦æ±‚ç”µæ± ç”µé‡
+	//3: ä»»æ„çŠ¶æ€ä¸‹ï¼Œå…è®¸æ’ç«ç‰›ç›´æ¥å¼€æœºï¼Œä¸è¦æ±‚ç”µæ± ç”µé‡ 
 	wBoot_script_parser_fetch("target", "power_start", &power_start, 1);
 	__inf("power_start=%x\n", (power_start<<8) | status);
-	if(status == 3)					//µÍµç£¬Í¬Ê±´øÍâ²¿µçÔ´×´Ì¬ÏÂ
+	if(status == 3)					//ä½ç”µï¼ŒåŒæ—¶å¸¦å¤–éƒ¨ç”µæºçŠ¶æ€ä¸‹
 	{
-		if(!(power_start & 0x02))	//ĞèÒªÅĞ¶Ïµ±Ç°µç³ØµçÁ¿£¬ÒªÇópower_startµÄµÚ1bitµÄÖµÎª0
-		{							//´ËÖÖÇé¿öÏÂ£¬Ö±½Ó¹Ø»ú
+		if(!(power_start & 0x02))	//éœ€è¦åˆ¤æ–­å½“å‰ç”µæ± ç”µé‡ï¼Œè¦æ±‚power_startçš„ç¬¬1bitçš„å€¼ä¸º0
+		{							//æ­¤ç§æƒ…å†µä¸‹ï¼Œç›´æ¥å…³æœº
 			__inf("battery low power with dc or ac, should charge longer\n");
 			ShowPictureEx("c:\\os_show\\bempty.bmp", 0);
 			wBoot_timer_delay(3000);
@@ -162,19 +162,19 @@ __s32 check_power_status(void)
 		}
 		else
 		{
-			if(power_start == 3)	//²»ĞèÒªÅĞ¶Ïµ±Ç°µç³ØµçÁ¿£¬Èç¹ûÎª3£¬Ôò½øÈëÏµÍ³£¬Èç¹ûÎª0£¬Ôò½øĞĞºóĞøÅĞ¶Ï
+			if(power_start == 3)	//ä¸éœ€è¦åˆ¤æ–­å½“å‰ç”µæ± ç”µé‡ï¼Œå¦‚æœä¸º3ï¼Œåˆ™è¿›å…¥ç³»ç»Ÿï¼Œå¦‚æœä¸º0ï¼Œåˆ™è¿›è¡Œåç»­åˆ¤æ–­
 			{
 				return 0;
 			}
 		}
 	}
-	else							//status=2 µç³ØµçÁ¿×ã¹»Çé¿öÏÂ
+	else							//status=2 ç”µæ± ç”µé‡è¶³å¤Ÿæƒ…å†µä¸‹
 	{
-		if(power_start & 0x01)		//Èç¹ûµÚ0bitµÄÖµÎª1£¬Ôò½øÈëÏµÍ³
+		if(power_start & 0x01)		//å¦‚æœç¬¬0bitçš„å€¼ä¸º1ï¼Œåˆ™è¿›å…¥ç³»ç»Ÿ
 		{
 			return 0;
 		}
-	}								//ÆäËüÇé¿öÏÂ£¬½øÈëºóĞøÅĞ¶Ï
+	}								//å…¶å®ƒæƒ…å†µä¸‹ï¼Œè¿›å…¥åç»­åˆ¤æ–­
 
 	status = -1;
 	status = wBoot_power_check_startup();
@@ -191,8 +191,8 @@ __s32 check_power_status(void)
 		int   bat_full_status = 0;
 		int   key_status;
 
-		//µ±Ç°¿ÉÒÔÈ·¶¨ÊÇ»ğÅ£¿ª»ú£¬µ«ÊÇÊÇ·ñ¿ª»ú»¹²»È·¶¨£¬ĞèÒªÈ·ÈÏµç³ØÊÇ·ñ´æÔÚ
-		//µ±µç³Ø²»´æÔÚ¼´¿ª»ú£¬µç³Ø´æÔÚÔò¹Ø»ú
+		//å½“å‰å¯ä»¥ç¡®å®šæ˜¯ç«ç‰›å¼€æœºï¼Œä½†æ˜¯æ˜¯å¦å¼€æœºè¿˜ä¸ç¡®å®šï¼Œéœ€è¦ç¡®è®¤ç”µæ± æ˜¯å¦å­˜åœ¨
+		//å½“ç”µæ± ä¸å­˜åœ¨å³å¼€æœºï¼Œç”µæ± å­˜åœ¨åˆ™å…³æœº
 //		power_int_reg();
 //		usb_detect_enter();
 		bat_show_hd = ShowBatteryCharge_init(0);
@@ -224,24 +224,24 @@ __s32 check_power_status(void)
 				key_status = wBoot_power_get_key();
 				if(key_status > 0)
 				{
-					if(key_status & 0x02)	//¶Ì°´
+					if(key_status & 0x02)	//çŸ­æŒ‰
 					{
 						i = 0;
 					}
-					else if(key_status & 0x01) //³¤°´
+					else if(key_status & 0x01) //é•¿æŒ‰
 					{
 						ShowBatteryCharge_exit(bat_show_hd);
 		                 __inf("Battery full and Long Pressing, Go to system now...\n");
 						return 0;
 					}
 				}
-//				if(power_ops_int_status & 0x02)	//¶Ì°´
+//				if(power_ops_int_status & 0x02)	//çŸ­æŒ‰
 //				{
 //					power_ops_int_status &= ~0x02;
 //					j = 0;
 //					__inf("short key\n");
 //				}
-//				else if(power_ops_int_status & 0x01)	//³¤°´
+//				else if(power_ops_int_status & 0x01)	//é•¿æŒ‰
 //				{
 //					ShowBatteryCharge_exit(bat_show_hd);
 //					wlibc_int_disable();
@@ -268,11 +268,11 @@ __s32 check_power_status(void)
 					key_status = wBoot_power_get_key();
 					if(key_status > 0)
 					{
-						if(key_status & 0x02)	//¶Ì°´
+						if(key_status & 0x02)	//çŸ­æŒ‰
 						{
 							j = 0;
 						}
-						else if(key_status & 0x01) //³¤°´
+						else if(key_status & 0x01) //é•¿æŒ‰
 						{
 							ShowBatteryCharge_exit(bat_show_hd);
 
@@ -281,13 +281,13 @@ __s32 check_power_status(void)
 						}
 					}
 					wBoot_timer_delay(one_delay);
-//					if(power_ops_int_status & 0x02)	//¶Ì°´
+//					if(power_ops_int_status & 0x02)	//çŸ­æŒ‰
 //					{
 //						power_ops_int_status &= ~0x02;
 //						j = 0;
 //						__inf("short key\n");
 //					}
-//					else if(power_ops_int_status & 0x01)	//³¤°´
+//					else if(power_ops_int_status & 0x01)	//é•¿æŒ‰
 //					{
 //						ShowBatteryCharge_exit(bat_show_hd);
 //						wlibc_int_disable();
@@ -310,16 +310,16 @@ __s32 check_power_status(void)
 		return -1;
 /******************************************************************
 *
-*	standby ·µ»ØÖµËµÃ÷
+*	standby è¿”å›å€¼è¯´æ˜
 *
-*	   -1: ½øÈëstandbyÊ§°Ü
-*		1: ÆÕÍ¨°´¼ü»½ĞÑ
-*		2: µçÔ´°´¼ü¶Ì°´»½ĞÑ
-*		3: µçÔ´°´¼ü³¤°´»½ĞÑ
-*		4: Íâ²¿µçÔ´ÒÆ³ı»½ĞÑ
-*		5: µç³Ø³äµçÍê³É
-*		6: ÔÚ»½ĞÑ×´Ì¬ÏÂÍâ²¿µçÔ´±»ÒÆ³ı
-*		7: ÔÚ»½ĞÑ×´Ì¬ÏÂ³äµçÍê³É
+*	   -1: è¿›å…¥standbyå¤±è´¥
+*		1: æ™®é€šæŒ‰é”®å”¤é†’
+*		2: ç”µæºæŒ‰é”®çŸ­æŒ‰å”¤é†’
+*		3: ç”µæºæŒ‰é”®é•¿æŒ‰å”¤é†’
+*		4: å¤–éƒ¨ç”µæºç§»é™¤å”¤é†’
+*		5: ç”µæ± å……ç”µå®Œæˆ
+*		6: åœ¨å”¤é†’çŠ¶æ€ä¸‹å¤–éƒ¨ç”µæºè¢«ç§»é™¤
+*		7: åœ¨å”¤é†’çŠ¶æ€ä¸‹å……ç”µå®Œæˆ
 *
 ******************************************************************/
 		do
@@ -351,7 +351,7 @@ __s32 check_power_status(void)
 			}
 			switch(status)
 			{
-				case 2:		//¶Ì°´power°´¼üµ¼ÖÂ»½ĞÑ short press
+				case 2:		//çŸ­æŒ‰poweræŒ‰é”®å¯¼è‡´å”¤é†’ short press
 				{
 					//power_int_reg();
 					De_OpenLayer(board_res.layer_hd);
@@ -369,24 +369,24 @@ __s32 check_power_status(void)
 							key_status = wBoot_power_get_key();
 
 							if(key_status > 0){
-								if(key_status & 0x02)	//¶Ì°´
+								if(key_status & 0x02)	//çŸ­æŒ‰
 								{
 									j = 0;
 								}
-								else if(key_status & 0x01) //³¤°´
+								else if(key_status & 0x01) //é•¿æŒ‰
 								{
 									ShowBatteryCharge_exit(bat_show_hd);
 
 									return 0;
 								}
 							}
-//							if(power_ops_int_status & 0x02)	//¶Ì°´
+//							if(power_ops_int_status & 0x02)	//çŸ­æŒ‰
 //							{
 //								power_ops_int_status &= ~0x02;
 //								j = 0;
 //								__inf("short key\n");
 //							}
-//							else if(power_ops_int_status & 0x01)	//³¤°´
+//							else if(power_ops_int_status & 0x01)	//é•¿æŒ‰
 //							{
 //								ShowBatteryCharge_exit(bat_show_hd);
 //								wlibc_int_disable();
@@ -414,11 +414,11 @@ __s32 check_power_status(void)
 								key_status = wBoot_power_get_key();
 								if(key_status > 0)
 								{
-									if(key_status & 0x02)	//¶Ì°´
+									if(key_status & 0x02)	//çŸ­æŒ‰
 									{
 										j = 0;
 									}
-									else if(key_status & 0x01) //³¤°´
+									else if(key_status & 0x01) //é•¿æŒ‰
 									{
 										ShowBatteryCharge_exit(bat_show_hd);
 
@@ -426,13 +426,13 @@ __s32 check_power_status(void)
 									}
 								}
 								wBoot_timer_delay(one_delay);
-//								if(power_ops_int_status & 0x02)	//¶Ì°´
+//								if(power_ops_int_status & 0x02)	//çŸ­æŒ‰
 //								{
 //									power_ops_int_status &= ~0x02;
 //									j = 0;
 //									__inf("short key\n");
 //								}
-//								else if(power_ops_int_status & 0x01)	//³¤°´
+//								else if(power_ops_int_status & 0x01)	//é•¿æŒ‰
 //								{
 //									ShowBatteryCharge_exit(bat_show_hd);
 //									wlibc_int_disable();
@@ -453,7 +453,7 @@ __s32 check_power_status(void)
 				}/* end of case 2  short press */
 				break;
 
-				case 3:		//³¤°´µçÔ´°´¼üÖ®ºó£¬¹Ø±Õµç³ØÍ¼±ê£¬½øÈëÏµÍ³
+				case 3:		//é•¿æŒ‰ç”µæºæŒ‰é”®ä¹‹åï¼Œå…³é—­ç”µæ± å›¾æ ‡ï¼Œè¿›å…¥ç³»ç»Ÿ
 				{
 					ShowBatteryCharge_exit(bat_show_hd);
 //					power_int_reg();
@@ -461,8 +461,8 @@ __s32 check_power_status(void)
 					return 0;
 				}
 
-				case 4:		//µ±ÒÆ³ıÍâ²¿µçÔ´Ê±ºò£¬ÖØĞÂÏÔÊ¾µ±Ç°µç³ØÍ¼±êºó£¬3Ãëºó¹Ø»ú
-				case 5:		//µ±µç³Ø³äµçÍê³ÉµÄÊ±ºò£¬ĞèÒª¹Ø»ú
+				case 4:		//å½“ç§»é™¤å¤–éƒ¨ç”µæºæ—¶å€™ï¼Œé‡æ–°æ˜¾ç¤ºå½“å‰ç”µæ± å›¾æ ‡åï¼Œ3ç§’åå…³æœº
+				case 5:		//å½“ç”µæ± å……ç”µå®Œæˆçš„æ—¶å€™ï¼Œéœ€è¦å…³æœº
 					De_OpenLayer(board_res.layer_hd);
 					ShowBatteryCharge_rate(bat_show_hd, this_bat_cal);
 				case 6:
@@ -487,14 +487,14 @@ __s32 check_power_status(void)
 
 					return -1;
 				}
-				case 8:		//standby¹ı³ÌÖĞ¼ì²âµ½vbus½ÓÈë
+				case 8:		//standbyè¿‡ç¨‹ä¸­æ£€æµ‹åˆ°vbusæ¥å…¥
 				{
 //					usb_detect_enter();
 //					wBoot_timer_delay(600);
 //					usb_detect_exit();
 				}
 				break;
-				case 9:		//standby¹ı³ÌÖĞ¼ì²âµ½vbusÒÆ³ı£¬Í¬Ê±´æÔÚÆÕÍ¨dc
+				case 9:		//standbyè¿‡ç¨‹ä¸­æ£€æµ‹åˆ°vbusç§»é™¤ï¼ŒåŒæ—¶å­˜åœ¨æ™®é€šdc
 				{
 //					power_set_usbpc();
 				}
@@ -556,4 +556,5 @@ static int shut_battery_full(void)
 
 	return 0;
 }
+
 
