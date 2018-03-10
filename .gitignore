@@ -1,0 +1,122 @@
+#
+# NOTE! Don't add files that are generated in specific
+# subdirectories here. Add them in the ".gitignore" file
+# in that subdirectory instead.
+#
+# NOTE! Please use 'git ls-files -i --exclude-standard'
+# command after changing this file, to see if there are
+# any tracked files which get ignored after the change.
+#
+# Normal rules
+#
+.*
+*.o
+*.o.*
+*.a
+*.s
+*.ko
+*.so
+*.so.dbg
+*.mod.c
+*.i
+*.lst
+*.symtypes
+*.order
+modules.builtin
+*.elf
+*.bin
+*.gz
+*.bz2
+*.lzma
+*.xz
+*.lzo
+*.patch
+*.gcno
+
+#
+# Top-level generic files
+#
+/tags
+/TAGS
+/linux
+/vmlinux
+/vmlinuz
+/System.map
+/Module.markers
+/Module.symvers
+
+#
+# git files that we don't want to ignore even it they are dot-files
+#
+!.gitignore
+!.mailmap
+
+#
+# Generated include files
+#
+include/config
+include/linux/version.h
+include/generated
+arch/*/include/generated
+
+# stgit generated dirs
+patches-*
+
+# quilt's files
+patches
+series
+
+# cscope files
+cscope.*
+ncscope.*
+
+# gnu global files
+GPATH
+GRTAGS
+GSYMS
+GTAGS
+
+*.orig
+*~
+\#*#
+
+# build generated files
+output/
+arch/arm/*/pm/standby/standby.code
+arch/arm/*/pm/standby/standby.map
+modules/example/*.symvers
+modules/mali/*/*/*/*/*.symvers
+modules/wifi/ar6003/AR6kSDK.build_3.1_RC.514/host/os/linux/Module.symvers
+modules/wifi/ar6302/AR6K_SDK_ISC.build_3.1_RC.329/host/os/linux/Module.symvers
+modules/wifi/nano-c047.12/kernel/ic/Module.symvers
+modules/wifi/nano-c047.12/kernel/ksdio/Module.symvers
+modules/wifi/usi-bcm4329/v4.218.248.15/open-src/src/dhd/linux/dhd-cdc-sdmmc-gpl-*
+modules/wifi/bcm40181/5.90.125.69.2/open-src/src/dhd/linux/dhd-cdc-sdmmc-gpl-*
+
+arch/arm/configs/tmp.txt
+arch/arm/mach-sun5i/pm/standby/resume0.map
+arch/arm/mach-sun5i/pm/standby/resume1.map
+arch/arm/mach-sun5i/pm/standby/super/resume/resume0.code
+arch/arm/mach-sun5i/pm/standby/super/resume/resume1.code
+arch/arm/mach-sun5i/pm/standby/super/suspend/suspend.code
+arch/arm/mach-sun5i/pm/standby/suspend.map
+modules/mali/DX910-SW-99002-r3p1-01rel1/driver/src/devicedrv/mali/Module.symvers
+modules/mali/DX910-SW-99002-r3p1-01rel1/driver/src/devicedrv/mali/arch
+modules/mali/DX910-SW-99002-r3p1-01rel1/driver/src/devicedrv/ump/Module.symvers
+modules/mali/DX910-SW-99002-r3p1-01rel1/driver/src/devicedrv/ump/arch
+
+boot1/libs/eGon2_libc.lib
+boot1/libs/eGon2_ui.lib
+workspace/egon/boot1_nand.bin
+workspace/egon/boot1_sdmmc.bin
+workspace/wboot/bootfs/boot.axf
+workspace/wboot/bootfs/drv_de.drv
+workspace/wboot/bootfs/sprite.axf
+
+boot1/apps/Card_Android/__image.axf
+boot1/core/boot1_nand
+boot1/core/boot1_sdmmc
+to_del/
+
+
+
