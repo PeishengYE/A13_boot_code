@@ -126,13 +126,21 @@ __s32 check_power_status(void)
 	__s32 status;
 	__s32 power_start;
     __u32 dcin, bat_exist;
+	/* YEP inside: 
+	 * power off the board whenever there is no AC charger connected 
+	 * Disadvantage: failed to reboot by sw */
+	  
+	/*
+		__inf("YEP inside: power off the board. \n");
+		return -1;
+		*/
+	
 	status = wBoot_power_get_level();
-	if(status == 1)						//低电状态下，无外部电源，直接关机
-	{
+	//低电状态下，无外部电源，直接关机 
+	if(status == 1){
 		__inf("battery low power with no dc or ac, should set power off\n");
 		ShowPictureEx("c:\\os_show\\low_pwr.bmp", 0);
 		wBoot_timer_delay(3000);
-
 		return -1;
 	}
 	power_start = 0;
@@ -223,7 +231,7 @@ __s32 check_power_status(void)
 					else if(key_status & 0x01) //长按
 					{
 						ShowBatteryCharge_exit(bat_show_hd);
-
+		                 __inf("Battery full and Long Pressing, Go to system now...\n");
 						return 0;
 					}
 				}
@@ -248,9 +256,7 @@ __s32 check_power_status(void)
 //				}
 				wBoot_timer_delay(250);
 			}
-		}
-		else
-		{
+		} else {
 			int one_delay;
 
 			one_delay = 1000/(10 - (this_bat_cal/10));
@@ -270,6 +276,7 @@ __s32 check_power_status(void)
 						{
 							ShowBatteryCharge_exit(bat_show_hd);
 
+		                     __inf("Battery not full and Long Pressing, Go to system now...\n");
 							return 0;
 						}
 					}
@@ -299,7 +306,8 @@ __s32 check_power_status(void)
 			wBoot_timer_delay(1000);
 		}
 		wBoot_power_get_key();
-		__inf("extenal power low go high startup\n");
+		__inf("YEP inside: External power connected, Still Power off\n");
+		return -1;
 /******************************************************************
 *
 *	standby 返回值说明
@@ -343,23 +351,24 @@ __s32 check_power_status(void)
 			}
 			switch(status)
 			{
-				case 2:		//短按power按键导致唤醒
+				case 2:		//短按power按键导致唤醒 short press
 				{
 					//power_int_reg();
 					De_OpenLayer(board_res.layer_hd);
-					if(this_bat_cal == 100)
-					{
+
+					if(this_bat_cal == 100){
 						if(bat_show_hd)
 						{
 							ShowBatteryCharge_exit(bat_show_hd);
 							bat_show_hd = NULL;
 						}
 						show_battery_full(&bat_full_status);
-						for(i =0;i<12;i++)
-						{
+
+						for(i =0;i<12;i++){
+
 							key_status = wBoot_power_get_key();
-							if(key_status > 0)
-							{
+
+							if(key_status > 0){
 								if(key_status & 0x02)	//短按
 								{
 									j = 0;
@@ -392,9 +401,8 @@ __s32 check_power_status(void)
 //							}
 							wBoot_timer_delay(250);
 						}
-					}
-					else
-					{
+
+					} else {
 						int one_delay;
 
 						one_delay = 1000/(10 - (this_bat_cal/10));
@@ -442,7 +450,7 @@ __s32 check_power_status(void)
 						ShowBatteryCharge_rate(bat_show_hd, this_bat_cal);
 						wBoot_timer_delay(1000);
 					}
-				}
+				}/* end of case 2  short press */
 				break;
 
 				case 3:		//长按电源按键之后，关闭电池图标，进入系统
